@@ -28,41 +28,38 @@ int main(int argc, char *argv[]) {
         derp.begin(seed);
     
         for (int i = 0; i < numOfIter; i++) {
-            std::cout << derp.nextval()%maxVal << delim; 
+            std::cout << derp.nextval()%maxVal; 
+            if ((i+1) != numOfIter) { std::cout << delim; } // don't output delimiter after last number
         }
     }
-    if (delim != '\n') {
-        std::cout << '\n'; // if delimiter was not a newline, print a newline after program ends so that prompt is not on same line as last number
-    }
+
+    std::cout << '\n'; // output newline so the command prompt isn't on same line as last number
+
     return 0;
 }
 
 void parseargs(int argnum, char *args[], char& delim, int& numOfIter, bool& help, unsigned long int& seed, long int& maxVal) {
-    if (argnum == 0) { return; } // if argnum == 0 or 1, the only argument passed was the program name. If argnum%2 == 0, one argument was passed but no value given
-    if (argnum%2 == 0 || argnum == 1) {
+    if (argnum == 1) { return; } // if argnum == 1, the only argument passed was the program name. If argnum%2 == 0, one argument was passed but no value given
+    if (argnum%2 == 0) {
         help = true;
         return;
     }
-    
+
     for (int i = 1; i < argnum; i += 2) {  
-        if (args[i] == "-h") { // this gets accomplished by the final else statement but I figured this would be a good "just in case"
-            help = true;
-            break;
-        }
-    
-        else if (args[i] == "-d") {
-            delim = args[i+1];
+        std::string argument = args[i]; // so the == operator works correctly
+        if (argument == "-d") {
+            delim = *(args[i+1]); // the compiler yelled at me for trying to convert a pointer into a char. I'm not sure either.
         }
 
-        else if (args[i] == "-n") {
+        else if (argument == "-n") {
             numOfIter = std::stoi(args[i+1]);
         }
 
-        else if (args[i] == "-m") {
+        else if (argument == "-m") {
             maxVal = std::stol(args[i+1]);
         }
 
-        else if (args[i] == "-s") {
+        else if (argument == "-s") {
             seed = std::stol(args[i+1]);
         }
 
@@ -84,4 +81,3 @@ void printhelp(char *args[]) {
     std::cout << "-h Prints this help message\n";
     std::cout << "Refer to README.md for more details.";
 }
-
